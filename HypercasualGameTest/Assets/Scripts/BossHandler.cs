@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BossHandler : MonoBehaviour
 {
     public PlayerValues playerValues;
+    public Animator bossAnimator;
 
     [HideInInspector]
     public int maxLife;
@@ -14,8 +15,11 @@ public class BossHandler : MonoBehaviour
     public Image lifeBar;
 
     public GameObject model1;
+    public GameObject ps1;
     public GameObject model2;
+    public GameObject ps2;
     public GameObject model3;
+    public GameObject ps3;
 
     // Start is called before the first frame update
     void Start()
@@ -29,32 +33,56 @@ public class BossHandler : MonoBehaviour
         
     }
 
+    // when player meet a boss
     public void StartFight()
     {
-        print("coucou");
         playerValues.playerController.Stop();
         playerValues.animator.SetBool("Wait", true);
 
         StartCoroutine(MoveCameraToFight());
     }
 
+    // just stops fight animation and go to Idle
     public void PreEndFight()
     {
         playerValues.animator.SetBool("Wait", true);
         playerValues.animator.SetBool("Fight", false);
     }
 
+    // kill the boss if the fight is successfull
     public void EndFight()
     {
         //explosion here
 
-        model1.SetActive(false);
-        model2.SetActive(false);
-        model3.SetActive(false);
+        if (model1.activeInHierarchy) Die(model1, ps1);
+        if (model2.activeInHierarchy) Die(model2, ps2);
+        if (model3.activeInHierarchy) Die(model3, ps3);
 
         StartCoroutine(MoveCameraToRun());
     }
 
+    // play boss' animation (karate kick)
+    public void HitPlayer()
+    {
+        bossAnimator.Play("Hit");
+    }
+
+    // animation of the boss' death
+    public void Die(GameObject model, GameObject ps)
+    {
+        ps.SetActive(true);
+        ps.GetComponent<ParticleSystem>().Play();
+
+        Rigidbody[] bodies = model.GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in bodies)
+        {
+            rb.isKinematic = false;
+        }
+
+        bossAnimator.enabled = false;
+    }
+
+    // move the camera to the fight position and rotation
     IEnumerator MoveCameraToFight()
     {
         Vector3 fightPos = playerValues.posCamFight.transform.position;
@@ -81,8 +109,11 @@ public class BossHandler : MonoBehaviour
         yield return null;
     }
 
+    // move the camera back to her original place
     IEnumerator MoveCameraToRun()
     {
+        yield return new WaitForSeconds(1f);
+
         Vector3 fightPos = playerValues.posCamFight.transform.position;
         Vector3 camPos = playerValues.posCamRun.transform.position;
         Quaternion camRot = playerValues.posCamRun.transform.rotation;

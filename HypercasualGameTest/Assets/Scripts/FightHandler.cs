@@ -4,26 +4,29 @@ using UnityEngine;
 
 public class FightHandler : MonoBehaviour
 {
+    public PlayerValues playerValues;
     public GameObject shurikenPrefab;
     public CollectibleCollector collectibleCollector;
 
     BossHandler target;
     int nbShurikenNeeded;
-    int targetMaxLife;
-    float lifeBarSize;
 
     // Shuriken Pool
     public ShurikenThrown shuriken1;
     public ShurikenThrown shuriken2;
     public ShurikenThrown shuriken3;
 
-    // Start is called before the first frame update
+
+
+    // Set the Shuriken Pool
     void Start()
     {
         shuriken1.ResetShuriken();
         shuriken2.ResetShuriken();
         shuriken3.ResetShuriken();
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -32,8 +35,16 @@ public class FightHandler : MonoBehaviour
     }
 
 
+
+    // The name speaks for itself. 
     public void ThrowShuriken()
     {
+        if (nbShurikenNeeded > 0 && collectibleCollector.NbCollectibleCollected == 0)
+        {
+            StartCoroutine(MakePlayerDie());
+            return;
+        }
+
         if (nbShurikenNeeded > 0)
         {
             if (!shuriken1.isUsed) shuriken1.Use();
@@ -50,14 +61,31 @@ public class FightHandler : MonoBehaviour
     }
 
 
+    // same
+    IEnumerator MakePlayerDie()
+    {
+        target.PreEndFight();
+
+        yield return new WaitForSeconds(0.5f);
+
+        target.HitPlayer();
+
+        yield return new WaitForSeconds(0.3f);
+
+        playerValues.isDead = true;
+
+        yield return null;
+    }    
+
+
+
+    // Starts fight if player meet a boss
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.tag == "Boss")
         {
             target = other.gameObject.GetComponent<BossHandler>();
             nbShurikenNeeded = target.life;
-            targetMaxLife = target.life;
-            lifeBarSize = target.lifeBar.rectTransform.rect.width;
             target.StartFight();
         }
     }

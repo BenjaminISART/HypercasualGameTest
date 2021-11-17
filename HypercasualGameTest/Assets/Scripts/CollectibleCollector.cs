@@ -6,7 +6,12 @@ using UnityEngine.UI;
 public class CollectibleCollector : MonoBehaviour
 {
     public List<string> collectibleTags = new List<string> { null };
+
     int nbCollectibleCollected;
+    public int NbCollectibleCollected
+    {
+        get => nbCollectibleCollected;
+    }
 
     public Text associatedUIText;
 
@@ -35,6 +40,7 @@ public class CollectibleCollector : MonoBehaviour
         nbCollectibleCollected -= nb;
     }
 
+    // collect a collectible
     private void OnTriggerEnter(Collider other)
     {
         if (collectibleTags.Find(x => x == other.gameObject.tag) != null)

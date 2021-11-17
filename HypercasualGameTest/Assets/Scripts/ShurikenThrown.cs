@@ -13,25 +13,35 @@ public class ShurikenThrown : MonoBehaviour
     public float speed = 3f;
     public Transform basePosition;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
+
+
+    // Simple Animation of the thrown shuriken
     void FixedUpdate()
     {
         transform.localPosition += new Vector3(0f, .5f, 2f) * speed * Time.fixedDeltaTime;
-        transform.Rotate(new Vector3(0f, 0f, speed * Time.fixedDeltaTime * 50f));
+        transform.Rotate(new Vector3(0f, 0f, speed * Time.fixedDeltaTime * 200f));
     }
+
+
 
     public void Use()
     {
         isUsed = true;
         gameObject.SetActive(true);
+        collectibleCollector.RemoveCollectible();
     }
 
+
+
+    // Reset shuriken from pool to his original position
     public void ResetShuriken()
     {
         transform.position = basePosition.position;
@@ -39,11 +49,13 @@ public class ShurikenThrown : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+
+
+    // Collision check between shuriken and boss, should be called on every shuriken (maybe ... :))
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Boss")
         {
-            collectibleCollector.RemoveCollectible();
             target = other.gameObject.GetComponent<BossHandler>();
             target.life--;
 

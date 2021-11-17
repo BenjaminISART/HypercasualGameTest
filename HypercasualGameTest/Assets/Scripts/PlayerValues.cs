@@ -29,9 +29,21 @@ public class PlayerValues : MonoBehaviour
         
     }
 
+    // ragdoll animation of the player if he dies
+    public void Die()
+    {
+        Rigidbody[] bodies = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in bodies)
+        {
+            rb.isKinematic = false;
+        }
+
+        animator.enabled = false;
+    }
+
+    // simple check of collision with obstacles
     private void OnTriggerEnter(Collider other)
     {
-        print("COUCOULESLOULOUS");
         if (other.gameObject.tag == "Obstacle")
         {
             isDead = true;

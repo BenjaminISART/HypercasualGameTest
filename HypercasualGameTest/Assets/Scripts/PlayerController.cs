@@ -28,39 +28,39 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-#if IOSBUILD
+        Vector3 pos = transform.position;
 
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
-            savedTouchPos = touch.deltaPosition;
+            Vector2 delta = touch.deltaPosition;
 
             print(touch.deltaPosition);
-
-            Vector3 modifiedPos = transform.position;
-            modifiedPos.x += savedTouchPos.x;
-            transform.position = modifiedPos;
-        }
-
-#else
-
-        Vector3 pos = transform.position;
-
-        if (Input.GetMouseButton(0))
-        {
-            Vector2 delta = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - lastMousePos;
 
             pos += new Vector3(delta.x, 0f, 0f) * xSpeed * Time.fixedDeltaTime;
             pos.x = Mathf.Clamp(pos.x, -maxOffset, maxOffset);
         }
 
-        print("ONPASSELA");
         pos.z += zSpeed * Time.deltaTime;
         transform.position = pos;
 
-        lastMousePos = Input.mousePosition;
-#endif
+
+        /////////////////////////////////////////////////////////// WINDOWS DEBUG
+        //Vector3 pos = transform.position;
+
+        //if (Input.GetMouseButton(0))
+        //{
+        //    Vector2 delta = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - lastMousePos;
+
+        //    pos += new Vector3(delta.x, 0f, 0f) * xSpeed * Time.fixedDeltaTime;
+        //    pos.x = Mathf.Clamp(pos.x, -maxOffset, maxOffset);
+        //}
+
+        //pos.z += zSpeed * Time.deltaTime;
+        //transform.position = pos;
+
+        //lastMousePos = Input.mousePosition;
     }
 
 

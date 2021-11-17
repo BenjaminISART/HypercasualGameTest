@@ -13,7 +13,7 @@ public class ShurikenCollectible : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    // Simple animation for collectibles, turn on themselves and go up and down
     void FixedUpdate()
     {
         Vector3 rotation = transform.localRotation.eulerAngles;
